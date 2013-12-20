@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Scratchpad for JS Testing</title>
+    
+    <!-- CSS -->
+    <link href="style.css" type="text/css" rel="stylesheet" />
+
+    <!-- Javascript -->
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    
+    <!-- Math/Engine Core -->
+    <script type="text/javascript" src="js/engine/world/Geometry.js"></script>
+    <script type="text/javascript" src="js/Utility.js"></script>
+    <script type="text/javascript" src="js/engine/world/BoundingBox.js"></script>
+
+    <!-- Engine -->
+    <script type="text/javascript" src="js/engine/Network.js"></script>
+    <script type="text/javascript" src="js/engine/Game.js"></script>
+    <script type="text/javascript" src="js/engine/ResourceManifest.js"></script>
+    <script type="text/javascript" src="js/engine/Grid.js"></script>
+    <script type="text/javascript" src="js/engine/Map.js"></script>
+    <script type="text/javascript" src="js/engine/ActorBase.js"></script>
+    <script type="text/javascript" src="js/engine/WorldObject.js"></script>
+    <script type="text/javascript" src="js/engine/Wall.js"></script>
+
+    <!-- Actors -->
+    <script type="text/javascript" src="js/actors/Ball.js"></script>
+</head>
+<body>
+    <div id="page-content">
+        <div>
+            <canvas class="game-canvas" id="bufferOne" width="1280" height="720" tabindex="0"></canvas>
+            <div>
+                <canvas class="game-canvas" id="debugCanvas" width="150" height="150" tabindex="0"></canvas>
+            </div>
+        </div>
+        <span id="output"></span>
+        <input id="go" type="button" value="Go!" />
+    </div>
+    <script type="text/javascript" src="js/scratch.js"></script>
+</body>
+</html>
