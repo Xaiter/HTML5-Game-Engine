@@ -11,15 +11,12 @@ function ActorBaseClass(game, width, height) {
     this.isWorldObject = false;
     this.sprite = null;
     this.hitBox = null;
+    this.velocity = 0;
     
 }
 
 ActorBaseClass.prototype.render = function (renderContext) {
     renderContext.drawImage(this.sprite, this.pos.x, this.pos.y);
-};
-
-ActorBaseClass.prototype.checkCollision = function (otherActor) {
-
 };
 ActorBaseClass.prototype.translate = function (x, y) {
     this.hitBox.translate(x, y);

@@ -33,7 +33,6 @@ function GameClass(canvas) {
     this.mousePos = new Vector2D(0, 0);
     this.player = new Ball(this);
 
-
     // Initialization
     var self = this;
     this.attachInputCapture();
@@ -56,8 +55,10 @@ GameClass.prototype.start = function () {
 GameClass.prototype.gameTick = function () {
     this._lastTickTime = new Date();
 
-    for (var i = 0; i < this._actors.length; i++)
+    for (var i = 0; i < this._actors.length; i++) {
         this._actors[i].tick();
+        this._checkCollisions(this._actors[i]);
+    }
 
     this.render();
 };
@@ -130,5 +131,89 @@ GameClass.prototype._hitBall = function () {
 };
 GameClass.prototype._checkCollisions = function (movedActor) {
 
+    var collisionInfo = null,
+        closestCollisionInfo = null;
+
+    for (var i = 0; i < this._worldObjects.length; i++) {
+        collisionInfo = CollisionDectector.checkCollision(movedActor, this._worldObjects[i]);
+        if (collisionInfo == null)
+            continue;
+
+        if (closestCollisionInfo == null || closestCollisionInfo.distance < collisionInfo.distance)
+            closestCollisionInfo = collisionInfo;
+    }
+
+    if (collisionInfo)
+    {
+        alert(collisionInfo);
+    }
 };
 
+
+var CollisionDectector = new (function () {
+
+    var checkBoxToBoxCollision = function (boxActorA, boxActorB) {
+        /// <param name="boxActorA" type="BoundingBoxClass" />
+        /// <param name="boxActorB" type="BoundingBoxClass" />
+
+        var collisionInfo = null,
+            closestCollisionInfo = null;
+
+        var linePairs = boxActorA.lines.generateUniquePairs(boxActorB.lines);
+        for (var i = 0; i < linePairs.length; i++) {
+            collisionInfo = GeometryUtility.checkLineLineCollision(linePairs[i][0], linePairs[i][1]);
+            if (closestCollisionInfo == null || closestCollisionInfo.distance > collisionInfo.distance)
+                closestCollisionInfo = collisionInfo;
+        }
+
+        return closestCollisionInfo;
+    };
+
+    var checkBoxToSphereCollision = function (boxActor, sphereActor) {
+        /// <param name="boxActor" type="ActorBaseClass" />
+        /// <param name="sphereActor" type="ActorBaseClass" />
+
+        var collisionInfo = null,
+            closestCollisionInfo = null;
+
+        for (var i = 0; i < boxActor.hitBox.lines.length; i++) {
+            collisionInfo = GeometryUtility.checkCircleLineCollision(sphereActor.hitBox, boxActor.hitBox.lines[i], sphereActor.velocity);
+
+            if (collisionInfo == null)
+                continue;
+
+            if (closestCollisionInfo == null || closestCollisionInfo.distance > collisionInfo.distance)
+                closestCollisionInfo = collisionInfo;
+        }
+
+        return closestCollisionInfo;
+    };
+
+    var checkSphereToSphereCollision = function (sphereActorA, sphereActorB) {
+        /// <param name="sphereActorA" type="BoundingCircleClass" />
+        /// <param name="sphereActorB" type="BoundingCircleClass" />
+
+        throw "nope not done yet go away not even planned right now oh my god I'm so fucking tired"
+    };
+
+    return {
+        checkCollision: function (actorA, actorB) {
+            /// <param name="movedActor" type="ActorBaseClass" />
+            /// <param name="actorToCheck" type="ActorBaseClass" />
+
+            var collisionInfo = null;
+
+            if (actorA.hitBox instanceof BoundingBoxClass && actorB.hitBox instanceof BoundingBoxClass)
+                collisionInfo = checkBoxToBoxCollision(actorA, actorB);
+            else if (actorA.hitBox instanceof BoundingCircleClass && actorB.hitBox instanceof BoundingCircleClass)
+                collisionInfo = checkSphereToSphereCollision(actorA, actorB);
+            else if (actorA.hitBox instanceof BoundingBoxClass && actorB.hitBox instanceof BoundingCircleClass)
+                collisionInfo = checkBoxToSphereCollision(actorA, actorB);
+            else if (actorA.hitBox instanceof BoundingCircleClass && actorB.hitBox instanceof BoundingBoxClass)
+                collisionInfo = checkBoxToSphereCollision(actorB, actorA);
+
+            return collisionInfo;
+        }
+    };
+
+})();

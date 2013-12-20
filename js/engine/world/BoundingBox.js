@@ -10,6 +10,8 @@
 
 
 function HitBoxBaseClass(owningActor) {
+    /// <param name="owningActor" type="ActorBaseClass" />
+
     this.owningActor = owningActor;
 }
 HitBoxBaseClass.prototype.translate = function (x, y) {
@@ -34,7 +36,7 @@ function BoundingBoxClass(owningActor, width, height, rotation) {
     this.height = height;
     this.rotation = rotation;
 
-    this._lines = [];
+    this.lines = [];
     this._generateMembers();
 }
 ClassUtility.inheritPrototype(HitBoxBaseClass, BoundingBoxClass);
@@ -48,8 +50,8 @@ BoundingBoxClass.prototype.moveTo = function (x, y) {
     this._translateMembers(x - this.owningActor.pos.x, y - this.owningActor.pos.y);
 };
 BoundingBoxClass.prototype._translateMembers = function (x, y) {
-    for (var i = 0; i < this._lines.length; i++) {
-        this._lines[i].translate(x, y);
+    for (var i = 0; i < this.lines.length; i++) {
+        this.lines[i].translate(x, y);
     }
 };
 BoundingBoxClass.prototype._generateMembers = function () {
@@ -63,18 +65,19 @@ BoundingBoxClass.prototype._generateMembers = function () {
     var leftLine = new LineClass(new Vector2D(leftX, bottomY), new Vector2D(leftX, topY));
     var rightLine = new LineClass(new Vector2D(rightX, bottomY), new Vector2D(rightX, topY));
 
-    this._lines.push(topLine, bottomLine, leftLine, rightLine);
+    this.lines.push(topLine, bottomLine, leftLine, rightLine);
 };
 
 
 
 function BoundingCircleClass(owningActor, radius) {
+    /// <param name="owningActor" type="ActorBaseClass" />
+    /// <param name="radius" type="number" />
 
     // Base "Constructor"
     HitBoxBaseClass.call(this, owningActor);
 
     this.radius = radius;
-
 }
 ClassUtility.inheritPrototype(HitBoxBaseClass, BoundingCircleClass);
 

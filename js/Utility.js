@@ -1,5 +1,6 @@
 ﻿/// <reference path="/js/jquery.min.js" />
 /// <reference path="/js/engine/world/Geometry.js" />
+/// <reference path="/js/engine/world/BoundingBox.js" />
 
 var Utility = {
     getRandomNumber: function (min, max) {
@@ -163,6 +164,7 @@ var GeometryUtility = (function () {
             /// <param name="lineA" type="LineClass" />
             /// <param name="lineB" type="LineClass" />
             /// <param name="velocityLineA" type="Vector2D" />
+            /// <returns type="CollisionInfoClass" />
 
             var lineSlope = lineB.calculateSlope();
             var velocitySlope = velocityLineA.calculateSlope();
@@ -193,12 +195,20 @@ var GeometryUtility = (function () {
 
             return closestCollision;
         },
-        checkPointLineCollision: function (pointA, slopePointA, velocityVectorA, lineB, lineSlopeB) {
+        checkCircleLineCollision: function (circle, line, circleVelocity) {
+            /// <param name="circle" type="BoundingCircleClass" />
+            /// <param name="line" type="LineClass" />
+            /// <param name="circleVelocity" type="Vector2D" />
+
+            return GeometryUtility.checkPointLineCollision(circle.owningActor.pos, circleVelocity.calculateSlope(), circleVelocity, line, line.calculateSlope(), circle.radius);
+        },
+        checkPointLineCollision: function (pointA, slopePointA, velocityVectorA, lineB, lineSlopeB, radiusPointA) {
             /// <param name="pointA" type="Vector2D" />
             /// <param name="slopePointA" type="number" />
             /// <param name="velocityVectorA" type="Vector2D" />
             /// <param name="lineB" type="LineClass" />
             /// <param name="slopeLineB" type="number" />
+            /// <param name="radiusPointA" type="number" />
             /// <returns type="CollisionInfoClass" />
 
             var collisionPoint = GeometryUtility.getIntersection(pointA, slopePointA, lineB.startPoint, lineSlopeB);
@@ -206,6 +216,9 @@ var GeometryUtility = (function () {
                 return null; // no collision!
 
             var distance = GeometryUtility.measureDistance(pointA, collisionPoint);
+            if (typeof radiusPointA != "undefined")
+                distance += radiusPointA;
+
             var t = distance / velocityVectorA.calculateLength();
             if (t > 1 || t < 0)
                 return null;
@@ -249,7 +262,7 @@ var GeometryUtility = (function () {
             var xDifference = pointA.x - pointB.x;
             var collisionY = pointB.y + (xDifference * slopeB);
             return new Vector2D(pointA.x, collisionY);
-        },
+        },        
 
         calculateSlope: function (startPoint, endPoint) {
             var run = endPoint.x - startPoint.x;
@@ -289,4 +302,14 @@ var GeometryUtility = (function () {
 
 Array.prototype.random = function () {
     return this[Utility.getRandomNumber(0, this.length - 1)];
+};
+
+Array.prototype.generateUniquePairs = function (array) {
+    var pairs = [];
+
+    for (var i = 0; i < array.length; i++)
+        for (var j = 0; j < this.length; j++)
+            pairs.push(array[i], this[j]);
+
+    return pairs;
 };

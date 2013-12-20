@@ -21,8 +21,8 @@ function WallClass(game, width, height, rotation) {
 ClassUtility.inheritPrototype(WorldObjectClass, WallClass);
 
 WallClass.prototype.render = function (renderContext) {
-    for (var i = 0; i < this.hitBox._lines.length; i++)
-        CanvasUtility.renderLine(renderContext, this.hitBox._lines[i]);
+    for (var i = 0; i < this.hitBox.lines.length; i++)
+        CanvasUtility.renderLine(renderContext, this.hitBox.lines[i]);
 };
 
 WallClass.prototype._generateSprite = function () {
